@@ -34,7 +34,6 @@ const RainEffect = () => {
 const getAiWeatherTips = (temp, isRaining, uvIndex, windSpeed, humidity) => {
   const tips = [];
 
-  // Outfit & Rain Gear Advice
   if (isRaining) {
     tips.push('☔ Heavy precipitation ahead. Carry an umbrella or waterproof raincoat, and wear slip-resistant footwear.');
   } else if (temp >= 30) {
@@ -47,7 +46,6 @@ const getAiWeatherTips = (temp, isRaining, uvIndex, windSpeed, humidity) => {
     tips.push('🥶 Cold temperature! Wear thermal layers, a heavy coat, and gloves.');
   }
 
-  // Sun Protection / UV Advice
   const uvNum = parseFloat(uvIndex);
   if (uvNum >= 8) {
     tips.push('🕶️ Extreme UV radiation alert! Wear sunglasses, broad-spectrum SPF 50+ sunscreen, and a wide-brim hat.');
@@ -55,7 +53,6 @@ const getAiWeatherTips = (temp, isRaining, uvIndex, windSpeed, humidity) => {
     tips.push('☀️ Moderate-to-high UV index. Sunscreen is recommended if spending over 20 minutes outdoors.');
   }
 
-  // Wind & Activity Advice
   const windNum = parseFloat(windSpeed);
   if (windNum > 30) {
     tips.push('💨 High wind gusts detected! Secure loose outdoor belongings and take caution while driving.');
@@ -63,7 +60,6 @@ const getAiWeatherTips = (temp, isRaining, uvIndex, windSpeed, humidity) => {
     tips.push('🏃 Ideal conditions for outdoor activities, jogging, or a city walk!');
   }
 
-  // Humidity / Comfort Advice
   const humidityNum = parseFloat(humidity);
   if (humidityNum >= 85 && temp >= 28) {
     tips.push('💦 High humidity levels will make it feel warmer than actual temperature. Drink extra water.');
@@ -160,40 +156,38 @@ const COUNTRY_INFO_DB = {
   }
 };
 
-// 🌤️ Weather Code Interpreter
 const getWeatherDetails = (code) => {
   switch (code) {
     case 0:
-      return { label: 'Clear Sky', icon: '☀️', color: '#FF8F00', isRaining: false };
+      return { label: 'Clear Sky', icon: '☀️', color: '#ff014f', isRaining: false };
     case 1:
     case 2:
     case 3:
-      return { label: 'Partly Cloudy', icon: '⛅', color: '#47A5FF', isRaining: false };
+      return { label: 'Partly Cloudy', icon: '⛅', color: '#1e2125', isRaining: false };
     case 45:
     case 48:
-      return { label: 'Foggy', icon: '🌫️', color: '#FFFFFF', isRaining: false };
+      return { label: 'Foggy', icon: '🌫️', color: '#60646c', isRaining: false };
     case 51:
     case 53:
     case 55:
-      return { label: 'Drizzle', icon: '🌦️', color: '#47A5FF', isRaining: true };
+      return { label: 'Drizzle', icon: '🌦️', color: '#ff014f', isRaining: true };
     case 61:
     case 63:
     case 65:
-      return { label: 'Rain', icon: '🌧️', color: '#47A5FF', isRaining: true };
+      return { label: 'Rain', icon: '🌧️', color: '#ff014f', isRaining: true };
     case 80:
     case 81:
     case 82:
-      return { label: 'Heavy Showers', icon: '🌧️⚡', color: '#FF8F00', isRaining: true };
+      return { label: 'Heavy Showers', icon: '🌧️⚡', color: '#ff014f', isRaining: true };
     case 95:
     case 96:
     case 99:
-      return { label: 'Thunderstorm', icon: '🌩️', color: '#FF8F00', isRaining: true };
+      return { label: 'Thunderstorm', icon: '🌩️', color: '#ff014f', isRaining: true };
     default:
-      return { label: 'Fair Weather', icon: '🌤️', color: '#47A5FF', isRaining: false };
+      return { label: 'Fair Weather', icon: '🌤️', color: '#1e2125', isRaining: false };
   }
 };
 
-// Format ISO time string to 12-hour AM/PM
 const formatSunTime = (isoTimeStr) => {
   if (!isoTimeStr) return '--:--';
   const date = new Date(isoTimeStr);
@@ -206,7 +200,6 @@ const formatSunTime = (isoTimeStr) => {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('weather');
-  const [theme, setTheme] = useState('dark');
   const [cityInput, setCityInput] = useState('');
   const [selectedCity, setSelectedCity] = useState('Dar es Salaam, Tanzania');
   const [weatherData, setWeatherData] = useState(null);
@@ -215,11 +208,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [aqiData, setAqiData] = useState(null);
 
-  // Flight search form state
   const [flightFrom, setFlightFrom] = useState('DAR');
   const [flightTo, setFlightTo] = useState('JNO');
 
-  // Hybrid Country Info Provider
   const loadCountryDetails = async (code, fallbackCountryName = '') => {
     const uppercaseCode = (code || '').toUpperCase();
 
@@ -314,7 +305,6 @@ export default function App() {
         const uvIndex = data.hourly?.uv_index ? data.hourly.uv_index[12] : '6.2';
         const windSpeed = data.current_weather.windspeed;
 
-        // Generate AI Weather Advisory
         const aiTips = getAiWeatherTips(temp, condition.isRaining, uvIndex, windSpeed, humidity);
 
         setWeatherData({
@@ -430,240 +420,80 @@ export default function App() {
     window.open(boltUrl, '_blank');
   };
 
-  const isDark = theme === 'dark';
-  const themeStyles = {
-    container: {
-      minHeight: '100vh',
-      backgroundColor: isDark ? '#000000' : '#f4f5f7',
-      color: isDark ? '#FFFFFF' : '#000000',
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif",
-      padding: '16px 16px 105px 16px',
-      maxWidth: '480px',
-      margin: '0 auto',
-      boxSizing: 'border-box',
-      position: 'relative',
-      overflow: 'hidden',
-      transition: 'all 0.3s ease',
-    },
-    header: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingBottom: '14px',
-      marginBottom: '16px',
-      borderBottom: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)'}`,
-    },
-    title: {
-      margin: 0,
-      fontSize: '22px',
-      fontWeight: '700',
-      letterSpacing: '-0.02em',
-      color: isDark ? '#FFFFFF' : '#000000',
-    },
-    themeToggle: {
-      background: isDark ? '#4C5055' : 'rgba(0, 0, 0, 0.05)',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`,
-      color: isDark ? '#FFFFFF' : '#000000',
-      padding: '6px 12px',
-      borderRadius: '10px',
-      fontSize: '13px',
-      fontWeight: '600',
-      cursor: 'pointer',
-    },
-    input: {
-      flex: 1,
-      background: isDark ? '#4C5055' : '#ffffff',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.15)' : '#cbd5e1'}`,
-      borderRadius: '10px',
-      padding: '10px 12px',
-      color: isDark ? '#FFFFFF' : '#000000',
-      fontSize: '13px',
-      outline: 'none',
-      width: '100%',
-      boxSizing: 'border-box',
-    },
-    card: {
-      background: isDark ? '#4C5055' : '#ffffff',
-      backdropFilter: 'blur(12px)',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'}`,
-      borderRadius: '16px',
-      padding: '20px',
-      boxShadow: isDark ? '0 8px 32px 0 rgba(0, 0, 0, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.06)',
-      textAlign: 'center',
-    },
-    locationText: {
-      margin: '0 0 4px 0',
-      fontSize: '18px',
-      fontWeight: '600',
-      color: isDark ? '#FFFFFF' : '#000000',
-    },
-    coordsText: {
-      margin: 0,
-      fontSize: '12px',
-      color: isDark ? 'rgba(255, 255, 255, 0.6)' : '#64748b',
-    },
-    feelsLike: {
-      margin: 0,
-      fontSize: '13px',
-      color: isDark ? 'rgba(255, 255, 255, 0.8)' : '#475569',
-    },
-    metricCard: {
-      background: isDark ? '#4C5055' : '#ffffff',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.06)'}`,
-      borderRadius: '12px',
-      padding: '12px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '4px',
-      boxShadow: isDark ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.04)',
-    },
-    metricLabel: {
-      fontSize: '12px',
-      color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#64748b',
-    },
-    metricValue: {
-      fontSize: '16px',
-      fontWeight: '600',
-      color: isDark ? '#FFFFFF' : '#000000',
-    },
-    infoCard: {
-      background: isDark ? '#4C5055' : '#ffffff',
-      border: `1px solid ${isDark ? 'rgba(71, 165, 255, 0.3)' : '#bae6fd'}`,
-      borderRadius: '16px',
-      padding: '16px',
-      textAlign: 'left',
-    },
-    aiCard: {
-      background: 'linear-gradient(135deg, rgba(71, 165, 255, 0.15) 0%, rgba(255, 143, 0, 0.15) 100%)',
-      border: '1px solid rgba(71, 165, 255, 0.4)',
-      borderRadius: '16px',
-      padding: '16px',
-      textAlign: 'left',
-    },
-    infoText: {
-      margin: '4px 0',
-      fontSize: '13px',
-      color: isDark ? '#FFFFFF' : '#334155',
-    },
-    forecastRow: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: '13px',
-      color: isDark ? '#FFFFFF' : '#334155',
-      padding: '6px 0',
-      borderBottom: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
-    },
-    hotelCard: {
-      background: isDark ? '#4C5055' : '#ffffff',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'}`,
-      borderRadius: '16px',
-      padding: '16px',
-      display: 'flex',
-      gap: '14px',
-      alignItems: 'center',
-      boxShadow: isDark ? 'none' : '0 2px 10px rgba(0, 0, 0, 0.04)',
-    },
-    hotelName: {
-      margin: 0,
-      fontSize: '15px',
-      color: isDark ? '#FFFFFF' : '#000000',
-    },
-    hourlyContainer: {
-      display: 'flex',
-      gap: '12px',
-      overflowX: 'auto',
-      paddingBottom: '8px',
-      scrollbarWidth: 'none',
-    },
-    hourlyCard: {
-      flex: '0 0 auto',
-      width: '65px',
-      padding: '10px 8px',
-      borderRadius: '12px',
-      background: isDark ? 'rgba(0, 0, 0, 0.3)' : '#ffffff',
-      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0'}`,
-      textAlign: 'center',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '4px',
-    },
-  };
-
   const history = countryInfo?.historyDetails || {};
 
   return (
-    <div style={themeStyles.container}>
-      {/* 🌧️ Render Falling Rain Effect when condition is Rain */}
+    <div className="min-h-screen bg-bodybg text-textdark p-4 sm:p-6 max-w-[480px] mx-auto box-border relative overflow-x-hidden font-sans pb-28">
+      {/* 🌧️ Render Falling Rain Effect */}
       {weatherData && weatherData.isRaining && <RainEffect />}
 
-      {/* Header */}
-      <header style={themeStyles.header}>
-        <h1 style={themeStyles.title}>Masweather</h1>
+      {/* Header Bar */}
+      <header className="flex justify-between items-center pb-3.5 mb-4 border-b border-gray-300 nav-sticky sticky top-0 z-20 pt-2">
+        <h1 className="m-0 text-xl font-bold tracking-tight text-textdark">Masweather</h1>
         <button
-          style={themeStyles.themeToggle}
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          onClick={handleGpsLocation}
+          className="neu-btn px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-primary"
         >
-          {isDark ? '☀️ Light' : '🌙 Dark'}
+          Masweather Pro
         </button>
       </header>
 
-      <main style={styles.mainContent}>
+      <main className="flex flex-col gap-4">
         {/* TAB 1: WEATHER */}
         {activeTab === 'weather' && (
-          <div style={styles.tabView}>
-            <form onSubmit={handleSearch} style={styles.searchBox}>
+          <div className="flex flex-col gap-4">
+            <form onSubmit={handleSearch} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Search city (e.g. Moshi, Seoul, Tokyo, London)..."
+                placeholder="Search city (e.g. Moshi, Seoul, Tokyo)..."
                 value={cityInput}
                 onChange={(e) => setCityInput(e.target.value)}
-                style={themeStyles.input}
+                className="neu-input px-3.5 py-2.5 rounded-xl text-xs w-full"
               />
-              <button type="submit" style={styles.btnPrimary}>
+              <button type="submit" className="neu-btn px-4 py-2.5 rounded-xl font-semibold text-xs whitespace-nowrap">
                 {loading ? '...' : 'Search'}
               </button>
-              <button type="button" onClick={handleGpsLocation} style={styles.btnGps}>
+              <button type="button" onClick={handleGpsLocation} className="neu-btn px-3 py-2.5 rounded-xl font-semibold text-xs whitespace-nowrap text-primary">
                 📍 GPS
               </button>
             </form>
 
-            {errorMsg && <p style={styles.errorText}>{errorMsg}</p>}
+            {errorMsg && <p className="text-primary text-xs text-center m-1">{errorMsg}</p>}
 
             {/* Current Weather Card */}
             {weatherData && (
               <>
-                <div style={themeStyles.card}>
-                  <h2 style={themeStyles.locationText}>📍 {weatherData.locationName}</h2>
-                  <p style={themeStyles.coordsText}>
+                <div className="neu-card p-5 text-center">
+                  <h2 className="m-0 mb-1 text-lg font-semibold text-textdark">📍 {weatherData.locationName}</h2>
+                  <p className="m-0 text-[11px] text-textgray">
                     Lat: {weatherData.lat} | Lon: {weatherData.lon}
                   </p>
 
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', margin: '10px 0 2px 0' }}>
-                    <span style={{ fontSize: '42px' }}>{weatherData.conditionIcon}</span>
-                    <div style={{ ...styles.tempDisplay, color: weatherData.conditionColor }}>
+                  <div className="flex justify-center items-center gap-2 my-2.5">
+                    <span className="text-4xl">{weatherData.conditionIcon}</span>
+                    <div className="text-5xl font-extrabold text-primary tracking-tighter">
                       {weatherData.temp}°C
                     </div>
                   </div>
 
-                  <p style={{ margin: '0 0 8px 0', fontWeight: '600', fontSize: '15px', color: weatherData.conditionColor }}>
+                  <p className="m-0 mb-2 font-semibold text-sm text-primary">
                     {weatherData.conditionLabel}
                   </p>
 
-                  <p style={themeStyles.feelsLike}>
+                  <p className="m-0 text-xs text-textgray">
                     Feels like {weatherData.feelsLike}°C • Wind: {weatherData.windSpeed} km/h
                   </p>
                 </div>
 
                 {/* 🤖 AI Weather Advisory Card */}
                 {weatherData.aiTips && weatherData.aiTips.length > 0 && (
-                  <div style={themeStyles.aiCard}>
-                    <h3 style={{ ...styles.infoTitle, color: '#FF8F00', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="neu-card p-4 text-left border-l-4 border-primary">
+                    <h3 className="m-0 mb-2 text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
                       🤖 AI Weather Advisor & Tips
                     </h3>
-                    <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <ul className="m-0 pl-4 flex flex-col gap-2">
                       {weatherData.aiTips.map((tip, idx) => (
-                        <li key={idx} style={{ fontSize: '13px', lineHeight: '1.4', color: '#FFFFFF' }}>
+                        <li key={idx} className="text-xs leading-snug text-textdark">
                           {tip}
                         </li>
                       ))}
@@ -671,31 +501,31 @@ export default function App() {
                   </div>
                 )}
 
-                {/* 🌅 Sun Times Card (Sunrise & Sunset) */}
-                <div style={{ ...themeStyles.infoCard, display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <span style={{ fontSize: '24px' }}>🌅</span>
-                    <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.7)' }}>Sunrise</p>
-                    <p style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#FF8F00' }}>{weatherData.sunrise}</p>
+                {/* 🌅 Sun Times Card */}
+                <div className="neu-card p-4 flex justify-around items-center">
+                  <div className="text-center">
+                    <span className="text-2xl">🌅</span>
+                    <p className="m-0 mt-0.5 text-[10px] text-textgray">Sunrise</p>
+                    <p className="m-0 text-sm font-bold text-primary">{weatherData.sunrise}</p>
                   </div>
-                  <div style={{ height: '30px', width: '1px', background: 'rgba(255, 255, 255, 0.15)' }} />
-                  <div style={{ textAlign: 'center' }}>
-                    <span style={{ fontSize: '24px' }}>🌇</span>
-                    <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.7)' }}>Sunset</p>
-                    <p style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#47A5FF' }}>{weatherData.sunset}</p>
+                  <div className="h-7 w-[1px] bg-gray-300" />
+                  <div className="text-center">
+                    <span className="text-2xl">🌇</span>
+                    <p className="m-0 mt-0.5 text-[10px] text-textgray">Sunset</p>
+                    <p className="m-0 text-sm font-bold text-textdark">{weatherData.sunset}</p>
                   </div>
                 </div>
 
                 {/* 24-Hour Interactive Weather Slider */}
                 {weatherData.hourly && weatherData.hourly.length > 0 && (
-                  <div style={themeStyles.infoCard}>
-                    <h3 style={styles.infoTitle}>🕒 24-Hour Forecast</h3>
-                    <div style={themeStyles.hourlyContainer}>
+                  <div className="neu-card p-4">
+                    <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">🕒 24-Hour Forecast</h3>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                       {weatherData.hourly.map((item, index) => (
-                        <div key={index} style={themeStyles.hourlyCard}>
-                          <span style={{ fontSize: '11px', color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#64748b' }}>{item.time}</span>
-                          <span style={{ fontSize: '20px' }}>{item.icon}</span>
-                          <span style={{ fontSize: '13px', fontWeight: '600', color: '#FFFFFF' }}>{item.temp}°C</span>
+                        <div key={index} className="neu-input flex-0-auto w-16 p-2.5 rounded-xl text-center flex flex-col items-center gap-1">
+                          <span className="text-[10px] text-textgray">{item.time}</span>
+                          <span className="text-lg">{item.icon}</span>
+                          <span className="text-xs font-semibold text-textdark">{item.temp}°C</span>
                         </div>
                       ))}
                     </div>
@@ -706,49 +536,47 @@ export default function App() {
                 <AirQualityCard aqiData={aqiData} />
 
                 {/* Weather Metrics Grid */}
-                <div style={styles.grid2x2}>
-                  <div style={themeStyles.metricCard}>
-                    <span style={themeStyles.metricLabel}>💧 Humidity</span>
-                    <span style={themeStyles.metricValue}>{weatherData.humidity}%</span>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="neu-card p-3.5 flex flex-col gap-1">
+                    <span className="text-[11px] text-textgray font-medium">💧 Humidity</span>
+                    <span className="text-base font-bold text-textdark">{weatherData.humidity}%</span>
                   </div>
-                  <div style={themeStyles.metricCard}>
-                    <span style={themeStyles.metricLabel}>☀️ UV Index</span>
-                    <span style={themeStyles.metricValue}>{weatherData.uvIndex}</span>
+                  <div className="neu-card p-3.5 flex flex-col gap-1">
+                    <span className="text-[11px] text-textgray font-medium">☀️ UV Index</span>
+                    <span className="text-base font-bold text-textdark">{weatherData.uvIndex}</span>
                   </div>
-                  <div style={themeStyles.metricCard}>
-                    <span style={themeStyles.metricLabel}>💨 Wind</span>
-                    <span style={themeStyles.metricValue}>{weatherData.windSpeed} km/h</span>
+                  <div className="neu-card p-3.5 flex flex-col gap-1">
+                    <span className="text-[11px] text-textgray font-medium">💨 Wind</span>
+                    <span className="text-base font-bold text-textdark">{weatherData.windSpeed} km/h</span>
                   </div>
-                  <div style={themeStyles.metricCard}>
-                    <span style={themeStyles.metricLabel}>⏲️ Pressure</span>
-                    <span style={themeStyles.metricValue}>{weatherData.pressure} hPa</span>
+                  <div className="neu-card p-3.5 flex flex-col gap-1">
+                    <span className="text-[11px] text-textgray font-medium">⏲️ Pressure</span>
+                    <span className="text-base font-bold text-textdark">{weatherData.pressure} hPa</span>
                   </div>
                 </div>
 
                 {/* Quick Bolt Ride Shortcut Card */}
-                <div style={styles.boltQuickCard} onClick={openBoltRide}>
+                <div className="neu-card-interactive neu-card p-4 flex justify-between items-center cursor-pointer" onClick={openBoltRide}>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: '14px', color: '#FFFFFF' }}>🚗 Need a Ride in {selectedCity}?</h4>
-                    <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255, 255, 255, 0.85)' }}>
-                      Request Bolt car or Boda-Boda ride
-                    </p>
+                    <h4 className="m-0 text-xs font-bold text-textdark">🚗 Need a Ride in {selectedCity}?</h4>
+                    <p className="m-0 mt-0.5 text-[11px] text-textgray">Request Bolt car or Boda-Boda ride</p>
                   </div>
-                  <span style={styles.boltQuickBtn}>Bolt ➔</span>
+                  <span className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Bolt ➔</span>
                 </div>
 
                 {/* 3-Day Forecast */}
-                <div style={themeStyles.infoCard}>
-                  <h3 style={styles.infoTitle}>📅 3-Day Forecast</h3>
-                  <div style={themeStyles.forecastRow}>
-                    <span>Today</span>
+                <div className="neu-card p-4">
+                  <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">📅 3-Day Forecast</h3>
+                  <div className="flex justify-between text-xs text-textdark py-2 border-b border-gray-200">
+                    <span className="font-semibold">Today</span>
                     <span>High: {weatherData.dailyMax[0]}°C | Low: {weatherData.dailyMin[0]}°C</span>
                   </div>
-                  <div style={themeStyles.forecastRow}>
-                    <span>Tomorrow</span>
+                  <div className="flex justify-between text-xs text-textdark py-2 border-b border-gray-200">
+                    <span className="font-semibold">Tomorrow</span>
                     <span>High: {weatherData.dailyMax[1]}°C | Low: {weatherData.dailyMin[1]}°C</span>
                   </div>
-                  <div style={themeStyles.forecastRow}>
-                    <span>Day After</span>
+                  <div className="flex justify-between text-xs text-textdark py-2">
+                    <span className="font-semibold">Day After</span>
                     <span>High: {weatherData.dailyMax[2]}°C | Low: {weatherData.dailyMin[2]}°C</span>
                   </div>
                 </div>
@@ -757,11 +585,11 @@ export default function App() {
 
             {/* Travel Info Card */}
             {countryInfo && (
-              <div style={themeStyles.infoCard}>
-                <h3 style={styles.infoTitle}>🌍 Travel Info ({countryInfo.countryName})</h3>
-                <p style={themeStyles.infoText}><strong>Currency:</strong> {countryInfo.currency}</p>
-                <p style={themeStyles.infoText}><strong>Languages:</strong> {countryInfo.languages}</p>
-                <p style={styles.tipText}>{countryInfo.tip}</p>
+              <div className="neu-card p-4 text-left">
+                <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🌍 Travel Info ({countryInfo.countryName})</h3>
+                <p className="m-1 text-xs text-textdark"><strong>Currency:</strong> {countryInfo.currency}</p>
+                <p className="m-1 text-xs text-textdark"><strong>Languages:</strong> {countryInfo.languages}</p>
+                <p className="m-0 mt-2 text-xs text-primary italic">{countryInfo.tip}</p>
               </div>
             )}
           </div>
@@ -769,40 +597,40 @@ export default function App() {
 
         {/* TAB 2: HOTELS */}
         {activeTab === 'hotels' && (
-          <div style={styles.tabView}>
-            <div style={themeStyles.card}>
-              <h2 style={themeStyles.locationText}>🏨 Hotels in {selectedCity}</h2>
-              <p style={themeStyles.feelsLike}>Compare top stays & lodges with instant availability.</p>
+          <div className="flex flex-col gap-4">
+            <div className="neu-card p-4 text-center">
+              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🏨 Hotels in {selectedCity}</h2>
+              <p className="m-0 text-xs text-textgray">Compare top stays & lodges with instant availability.</p>
             </div>
 
-            <div style={themeStyles.hotelCard}>
-              <div style={styles.hotelImagePlaceholder}>🏨</div>
-              <div style={styles.hotelDetails}>
-                <h3 style={themeStyles.hotelName}>Grand Luxury Hotel & Suites</h3>
-                <p style={styles.hotelRating}>⭐ 4.8 / 5.0 (240 reviews)</p>
-                <p style={styles.hotelPrice}>From $85 / night</p>
+            <div className="neu-card p-4 flex gap-3.5 items-center">
+              <div className="text-2xl p-3 neu-input rounded-xl">🏨</div>
+              <div className="flex flex-col gap-1 flex-1">
+                <h3 className="m-0 text-xs font-bold text-textdark">Grand Luxury Hotel & Suites</h3>
+                <p className="m-0 text-[11px] text-primary">⭐ 4.8 / 5.0 (240 reviews)</p>
+                <p className="m-0 text-xs font-bold text-textdark">From $85 / night</p>
                 <a
                   href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(selectedCity)}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={styles.bookBtn}
+                  className="neu-btn mt-2 inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-center no-underline"
                 >
                   View Stays on Booking.com ↗
                 </a>
               </div>
             </div>
 
-            <div style={themeStyles.hotelCard}>
-              <div style={styles.hotelImagePlaceholder}>🌿</div>
-              <div style={styles.hotelDetails}>
-                <h3 style={themeStyles.hotelName}>Serene Eco-Lodge & Spa</h3>
-                <p style={styles.hotelRating}>⭐ 4.6 / 5.0 (180 reviews)</p>
-                <p style={styles.hotelPrice}>From $62 / night</p>
+            <div className="neu-card p-4 flex gap-3.5 items-center">
+              <div className="text-2xl p-3 neu-input rounded-xl">🌿</div>
+              <div className="flex flex-col gap-1 flex-1">
+                <h3 className="m-0 text-xs font-bold text-textdark">Serene Eco-Lodge & Spa</h3>
+                <p className="m-0 text-[11px] text-primary">⭐ 4.6 / 5.0 (180 reviews)</p>
+                <p className="m-0 text-xs font-bold text-textdark">From $62 / night</p>
                 <a
                   href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(selectedCity)}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={styles.bookBtn}
+                  className="neu-btn mt-2 inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-center no-underline"
                 >
                   Check Availability ↗
                 </a>
@@ -813,32 +641,31 @@ export default function App() {
 
         {/* TAB 3: FLIGHTS */}
         {activeTab === 'flights' && (
-          <div style={styles.tabView}>
-            <div style={themeStyles.card}>
-              <h2 style={themeStyles.locationText}>✈️ Search Flights</h2>
-              <p style={themeStyles.feelsLike}>Find the best route and flight rates globally.</p>
+          <div className="flex flex-col gap-4">
+            <div className="neu-card p-4 text-center">
+              <h2 className="m-0 mb-1 text-base font-bold text-textdark">✈️ Search Flights</h2>
+              <p className="m-0 text-xs text-textgray">Find the best route and flight rates globally.</p>
             </div>
 
-            <div style={themeStyles.infoCard}>
-              <h3 style={styles.infoTitle}>🛫 Flight Search Matrix</h3>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">🛫 Flight Search Matrix</h3>
+              <div className="flex flex-col gap-3 mt-2">
                 <div>
-                  <label style={themeStyles.metricLabel}>From (Airport/City)</label>
+                  <label className="text-[11px] font-medium text-textgray">From (Airport/City)</label>
                   <input
                     type="text"
                     value={flightFrom}
                     onChange={(e) => setFlightFrom(e.target.value)}
-                    style={themeStyles.input}
+                    className="neu-input px-3 py-2 rounded-xl text-xs w-full mt-1"
                   />
                 </div>
                 <div>
-                  <label style={themeStyles.metricLabel}>To (Destination)</label>
+                  <label className="text-[11px] font-medium text-textgray">To (Destination)</label>
                   <input
                     type="text"
                     value={flightTo}
                     onChange={(e) => setFlightTo(e.target.value)}
-                    style={themeStyles.input}
+                    className="neu-input px-3 py-2 rounded-xl text-xs w-full mt-1"
                   />
                 </div>
 
@@ -846,7 +673,7 @@ export default function App() {
                   href={`https://www.google.com/travel/flights?q=flights+from+${encodeURIComponent(flightFrom)}+to+${encodeURIComponent(flightTo)}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={styles.flightSearchBtn}
+                  className="neu-btn mt-2 block px-4 py-2.5 rounded-xl text-xs font-bold text-center no-underline text-primary"
                 >
                   Search Flights on Google Flights ↗
                 </a>
@@ -855,280 +682,116 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 4: RIDES / BOLT */}
+        {/* TAB 4: RIDES */}
         {activeTab === 'rides' && (
-          <div style={styles.tabView}>
-            <div style={themeStyles.card}>
-              <h2 style={themeStyles.locationText}>🚕 Order a Ride (Bolt)</h2>
-              <p style={themeStyles.feelsLike}>
-                Request a Car, XL, or Boda-Boda ride to anywhere in {selectedCity}.
-              </p>
+          <div className="flex flex-col gap-4">
+            <div className="neu-card p-4 text-center">
+              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🚕 Order a Ride (Bolt)</h2>
+              <p className="m-0 text-xs text-textgray">Request a Car, XL, or Boda-Boda ride to anywhere in {selectedCity}.</p>
             </div>
 
-            <div style={{ ...themeStyles.infoCard, background: '#4C5055', borderColor: '#47A5FF' }}>
-              <h3 style={{ ...styles.infoTitle, color: '#47A5FF' }}>⚡ Available Ride Types</h3>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
-                <div style={styles.rideOptionRow}>
+            <div className="neu-card p-4">
+              <h3 className="m-0 text-xs font-bold text-primary uppercase tracking-wide">⚡ Available Ride Types</h3>
+              <div className="flex flex-col gap-3 mt-3">
+                <div className="flex justify-between items-center py-2 border-b border-gray-200">
                   <div>
-                    <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>🚗 Bolt Car / Boda</strong>
-                    <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>Fastest pick-up for city travel</p>
+                    <strong className="text-xs text-textdark">🚗 Bolt Car / Boda</strong>
+                    <p className="m-0 text-[10px] text-textgray">Fastest pick-up for city travel</p>
                   </div>
-                  <button onClick={openBoltRide} style={styles.boltActionBtn}>Book Ride ↗</button>
+                  <button onClick={openBoltRide} className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Book Ride ↗</button>
                 </div>
 
-                <div style={styles.rideOptionRow}>
+                <div className="flex justify-between items-center py-2">
                   <div>
-                    <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>🛵 Boda-Boda (Motorcycle)</strong>
-                    <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>Quickest mode to beat traffic</p>
+                    <strong className="text-xs text-textdark">🛵 Boda-Boda (Motorcycle)</strong>
+                    <p className="m-0 text-[10px] text-textgray">Quickest mode to beat traffic</p>
                   </div>
-                  <button onClick={openBoltRide} style={styles.boltActionBtn}>Book Boda ↗</button>
+                  <button onClick={openBoltRide} className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Book Boda ↗</button>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 5: COUNTRY HISTORY (C.H.) */}
+        {/* TAB 5: COUNTRY HISTORY */}
         {activeTab === 'history' && (
-          <div style={styles.tabView}>
-            <div style={themeStyles.card}>
-              <h2 style={themeStyles.locationText}>🏛️ Country History: {countryInfo ? countryInfo.countryName : 'Selected Location'}</h2>
-              <p style={themeStyles.feelsLike}>Full breakdown from origins to present day.</p>
+          <div className="flex flex-col gap-4">
+            <div className="neu-card p-4 text-center">
+              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🏛️ Country History: {countryInfo ? countryInfo.countryName : 'Selected Location'}</h2>
+              <p className="m-0 text-xs text-textgray">Full breakdown from origins to present day.</p>
             </div>
 
-            {/* Sub-Section 1: Before Independence */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={{ ...styles.infoTitle, color: '#FF8F00' }}>📜 1. Before Independence</h3>
-              <p style={styles.historyText}>{history.beforeIndependence || 'Ancient history and colonial period.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">📜 1. Before Independence</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.beforeIndependence || 'Ancient history and colonial period.'}</p>
             </div>
 
-            {/* Sub-Section 2: After Independence */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={styles.infoTitle}>🌅 2. After Independence</h3>
-              <p style={styles.historyText}>{history.afterIndependence || 'Sovereignty and political development.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🌅 2. After Independence</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.afterIndependence || 'Sovereignty and political development.'}</p>
             </div>
 
-            {/* Sub-Section 3: Leaders & Presidential Style */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={{ ...styles.infoTitle, color: '#FF8F00' }}>👑 3. Leaders & Presidential Styles</h3>
-              <p style={styles.historyText}>{history.presidentsAndStyle || 'Key heads of state and governing philosophies.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">👑 3. Leaders & Presidential Styles</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.presidentsAndStyle || 'Key heads of state and governing philosophies.'}</p>
             </div>
 
-            {/* Sub-Section 4: Famous People */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={styles.infoTitle}>⭐ 4. Famous People & Icons</h3>
-              <p style={styles.historyText}>{history.famousPeople || 'Prominent figures in arts, sports, and leadership.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">⭐ 4. Famous People & Icons</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.famousPeople || 'Prominent figures in arts, sports, and leadership.'}</p>
             </div>
 
-            {/* Sub-Section 5: Culture */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={{ ...styles.infoTitle, color: '#FF8F00' }}>🎭 5. Culture & Traditions</h3>
-              <p style={styles.historyText}>{history.culture || 'Local heritage, customs, music, and art.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🎭 5. Culture & Traditions</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.culture || 'Local heritage, customs, music, and art.'}</p>
             </div>
 
-            {/* Sub-Section 6: Present Day */}
-            <div style={themeStyles.infoCard}>
-              <h3 style={styles.infoTitle}>🚀 6. Present Day & Outlook</h3>
-              <p style={styles.historyText}>{history.presentDay || 'Current economic status and modern development.'}</p>
+            <div className="neu-card p-4 text-left">
+              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🚀 6. Present Day & Outlook</h3>
+              <p className="m-0 text-xs leading-relaxed text-textdark">{history.presentDay || 'Current economic status and modern development.'}</p>
             </div>
           </div>
         )}
       </main>
 
       {/* 🌊 Floating Glass Liquid Navigation Bar */}
-      <nav className="glass-nav">
+      <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[92%] max-w-[440px] neu-card p-2 flex justify-around items-center z-30 bg-opacity-90 backdrop-blur-md">
         <button
-          className={`glass-nav-btn ${activeTab === 'weather' ? 'active' : ''}`}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'weather' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('weather')}
         >
-          <span style={{ fontSize: '18px' }}>🌤️</span>
+          <span className="text-base">🌤️</span>
           <span>Weather</span>
         </button>
         <button
-          className={`glass-nav-btn ${activeTab === 'hotels' ? 'active' : ''}`}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'hotels' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('hotels')}
         >
-          <span style={{ fontSize: '18px' }}>🏨</span>
+          <span className="text-base">🏨</span>
           <span>Hotels</span>
         </button>
         <button
-          className={`glass-nav-btn ${activeTab === 'flights' ? 'active' : ''}`}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'flights' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('flights')}
         >
-          <span style={{ fontSize: '18px' }}>✈️</span>
+          <span className="text-base">✈️</span>
           <span>Flights</span>
         </button>
         <button
-          className={`glass-nav-btn ${activeTab === 'rides' ? 'active' : ''}`}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'rides' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('rides')}
         >
-          <span style={{ fontSize: '18px' }}>🚗</span>
+          <span className="text-base">🚗</span>
           <span>Rides</span>
         </button>
         <button
-          className={`glass-nav-btn ${activeTab === 'history' ? 'active' : ''}`}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'history' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('history')}
         >
-          <span style={{ fontSize: '18px' }}>🏛️</span>
+          <span className="text-base">🏛️</span>
           <span>C.H.</span>
         </button>
       </nav>
     </div>
   );
 }
-
-// Fixed Static Styles
-const styles = {
-  mainContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  tabView: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  searchBox: {
-    display: 'flex',
-    gap: '8px',
-  },
-  btnPrimary: {
-    background: '#47A5FF',
-    border: 'none',
-    color: '#FFFFFF',
-    padding: '10px 14px',
-    borderRadius: '10px',
-    fontWeight: '600',
-    fontSize: '13px',
-    cursor: 'pointer',
-  },
-  btnGps: {
-    background: 'rgba(255, 143, 0, 0.15)',
-    border: '1px solid #FF8F00',
-    color: '#FF8F00',
-    padding: '10px 12px',
-    borderRadius: '10px',
-    fontWeight: '600',
-    fontSize: '13px',
-    cursor: 'pointer',
-  },
-  errorText: {
-    color: '#FF8F00',
-    fontSize: '13px',
-    textAlign: 'center',
-    margin: '4px 0',
-  },
-  tempDisplay: {
-    fontSize: '52px',
-    fontWeight: '800',
-    color: '#47A5FF',
-    letterSpacing: '-0.03em',
-  },
-  grid2x2: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '10px',
-  },
-  infoTitle: {
-    margin: '0 0 8px 0',
-    fontSize: '14px',
-    fontWeight: '700',
-    color: '#47A5FF',
-  },
-  historyText: {
-    margin: 0,
-    fontSize: '13px',
-    lineHeight: '1.5',
-    color: 'rgba(255, 255, 255, 0.9)',
-  },
-  tipText: {
-    margin: '10px 0 0 0',
-    fontSize: '13px',
-    color: '#FF8F00',
-    fontStyle: 'italic',
-  },
-  hotelImagePlaceholder: {
-    fontSize: '32px',
-    background: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: '12px',
-    padding: '16px',
-  },
-  hotelDetails: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    flex: 1,
-  },
-  hotelRating: {
-    margin: 0,
-    fontSize: '12px',
-    color: '#FF8F00',
-  },
-  hotelPrice: {
-    margin: 0,
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#47A5FF',
-  },
-  bookBtn: {
-    marginTop: '6px',
-    display: 'inline-block',
-    background: '#47A5FF',
-    color: '#FFFFFF',
-    padding: '6px 10px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: '600',
-    textDecoration: 'none',
-    textAlign: 'center',
-  },
-  flightSearchBtn: {
-    marginTop: '10px',
-    display: 'block',
-    background: '#FF8F00',
-    color: '#FFFFFF',
-    padding: '10px',
-    borderRadius: '10px',
-    fontSize: '13px',
-    fontWeight: '600',
-    textDecoration: 'none',
-    textAlign: 'center',
-  },
-  boltQuickCard: {
-    background: 'linear-gradient(135deg, #47A5FF 0%, #0066cc 100%)',
-    borderRadius: '14px',
-    padding: '14px 16px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    cursor: 'pointer',
-    boxShadow: '0 4px 12px rgba(71, 165, 255, 0.3)',
-  },
-  boltQuickBtn: {
-    background: '#FF8F00',
-    color: '#FFFFFF',
-    padding: '6px 12px',
-    borderRadius: '8px',
-    fontWeight: '700',
-    fontSize: '12px',
-  },
-  rideOptionRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '8px 0',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-  },
-  boltActionBtn: {
-    background: '#FF8F00',
-    color: '#FFFFFF',
-    border: 'none',
-    padding: '8px 12px',
-    borderRadius: '8px',
-    fontWeight: '700',
-    fontSize: '12px',
-    cursor: 'pointer',
-  },
-};
