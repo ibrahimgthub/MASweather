@@ -423,173 +423,181 @@ export default function App() {
   const history = countryInfo?.historyDetails || {};
 
   return (
-    <div className="min-h-screen bg-bodybg text-textdark p-4 sm:p-6 max-w-[480px] mx-auto box-border relative overflow-x-hidden font-sans pb-28">
+    <div className="min-h-screen bg-bodybg text-textdark p-4 sm:p-6 md:p-10 w-full max-w-[480px] md:max-w-6xl mx-auto box-border relative font-sans pb-28 md:pb-12">
       {/* 🌧️ Render Falling Rain Effect */}
       {weatherData && weatherData.isRaining && <RainEffect />}
 
       {/* Header Bar */}
-      <header className="flex justify-between items-center pb-3.5 mb-4 border-b border-gray-300 nav-sticky sticky top-0 z-20 pt-2">
-        <h1 className="m-0 text-xl font-bold tracking-tight text-textdark">Masweather</h1>
+      <header className="flex justify-between items-center pb-3.5 mb-6 border-b border-gray-300 nav-sticky sticky top-0 z-20 pt-2 bg-bodybg/90 backdrop-blur-md">
+        <h1 className="m-0 text-xl md:text-2xl font-bold tracking-tight text-textdark">Masweather</h1>
         <button
           onClick={handleGpsLocation}
-          className="neu-btn px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-primary"
+          className="neu-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold cursor-pointer text-primary"
         >
           Masweather Pro
         </button>
       </header>
 
-      <main className="flex flex-col gap-4">
+      <main className="flex flex-col gap-6">
         {/* TAB 1: WEATHER */}
         {activeTab === 'weather' && (
-          <div className="flex flex-col gap-4">
-            <form onSubmit={handleSearch} className="flex gap-2">
+          <div className="flex flex-col gap-6">
+            <form onSubmit={handleSearch} className="flex gap-2 max-w-xl">
               <input
                 type="text"
                 placeholder="Search city (e.g. Moshi, Seoul, Tokyo)..."
                 value={cityInput}
                 onChange={(e) => setCityInput(e.target.value)}
-                className="neu-input px-3.5 py-2.5 rounded-xl text-xs w-full"
+                className="neu-input px-4 py-3 rounded-xl text-xs md:text-sm w-full"
               />
-              <button type="submit" className="neu-btn px-4 py-2.5 rounded-xl font-semibold text-xs whitespace-nowrap">
+              <button type="submit" className="neu-btn px-5 py-3 rounded-xl font-semibold text-xs md:text-sm whitespace-nowrap">
                 {loading ? '...' : 'Search'}
               </button>
-              <button type="button" onClick={handleGpsLocation} className="neu-btn px-3 py-2.5 rounded-xl font-semibold text-xs whitespace-nowrap text-primary">
+              <button type="button" onClick={handleGpsLocation} className="neu-btn px-4 py-3 rounded-xl font-semibold text-xs md:text-sm whitespace-nowrap text-primary">
                 📍 GPS
               </button>
             </form>
 
             {errorMsg && <p className="text-primary text-xs text-center m-1">{errorMsg}</p>}
 
-            {/* Current Weather Card */}
+            {/* Current Weather Card & Desktop Grid */}
             {weatherData && (
-              <>
-                <div className="neu-card p-5 text-center">
-                  <h2 className="m-0 mb-1 text-lg font-semibold text-textdark">📍 {weatherData.locationName}</h2>
-                  <p className="m-0 text-[11px] text-textgray">
-                    Lat: {weatherData.lat} | Lon: {weatherData.lon}
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* LEFT & CENTER COLUMNS (Main Weather Focus) */}
+                <div className="md:col-span-2 flex flex-col gap-6">
+                  <div className="neu-card p-6 md:p-8 text-center">
+                    <h2 className="m-0 mb-1 text-lg md:text-xl font-semibold text-textdark">📍 {weatherData.locationName}</h2>
+                    <p className="m-0 text-xs text-textgray">
+                      Lat: {weatherData.lat} | Lon: {weatherData.lon}
+                    </p>
 
-                  <div className="flex justify-center items-center gap-2 my-2.5">
-                    <span className="text-4xl">{weatherData.conditionIcon}</span>
-                    <div className="text-5xl font-extrabold text-primary tracking-tighter">
-                      {weatherData.temp}°C
+                    <div className="flex justify-center items-center gap-3 my-4">
+                      <span className="text-5xl md:text-6xl">{weatherData.conditionIcon}</span>
+                      <div className="text-6xl md:text-7xl font-extrabold text-primary tracking-tighter">
+                        {weatherData.temp}°C
+                      </div>
+                    </div>
+
+                    <p className="m-0 mb-2 font-semibold text-base text-primary">
+                      {weatherData.conditionLabel}
+                    </p>
+
+                    <p className="m-0 text-xs md:text-sm text-textgray">
+                      Feels like {weatherData.feelsLike}°C • Wind: {weatherData.windSpeed} km/h
+                    </p>
+                  </div>
+
+                  {/* 24-Hour Interactive Weather Slider */}
+                  {weatherData.hourly && weatherData.hourly.length > 0 && (
+                    <div className="neu-card p-5">
+                      <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🕒 24-Hour Forecast</h3>
+                      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+                        {weatherData.hourly.map((item, index) => (
+                          <div key={index} className="neu-input flex-0-auto w-20 p-3 rounded-xl text-center flex flex-col items-center gap-1.5">
+                            <span className="text-[11px] text-textgray">{item.time}</span>
+                            <span className="text-2xl">{item.icon}</span>
+                            <span className="text-xs font-semibold text-textdark">{item.temp}°C</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 3-Day Forecast */}
+                  <div className="neu-card p-5">
+                    <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">📅 3-Day Forecast</h3>
+                    <div className="flex justify-between text-xs md:text-sm text-textdark py-3 border-b border-gray-200">
+                      <span className="font-semibold">Today</span>
+                      <span>High: {weatherData.dailyMax[0]}°C | Low: {weatherData.dailyMin[0]}°C</span>
+                    </div>
+                    <div className="flex justify-between text-xs md:text-sm text-textdark py-3 border-b border-gray-200">
+                      <span className="font-semibold">Tomorrow</span>
+                      <span>High: {weatherData.dailyMax[1]}°C | Low: {weatherData.dailyMin[1]}°C</span>
+                    </div>
+                    <div className="flex justify-between text-xs md:text-sm text-textdark py-3">
+                      <span className="font-semibold">Day After</span>
+                      <span>High: {weatherData.dailyMax[2]}°C | Low: {weatherData.dailyMin[2]}°C</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN (Sidebar Metrics, AI & Info) */}
+                <div className="flex flex-col gap-6">
+                  {/* 🤖 AI Weather Advisory Card */}
+                  {weatherData.aiTips && weatherData.aiTips.length > 0 && (
+                    <div className="neu-card p-5 text-left border-l-4 border-primary">
+                      <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
+                        🤖 AI Weather Advisor & Tips
+                      </h3>
+                      <ul className="m-0 pl-4 flex flex-col gap-2.5">
+                        {weatherData.aiTips.map((tip, idx) => (
+                          <li key={idx} className="text-xs md:text-sm leading-snug text-textdark">
+                            {tip}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 🌅 Sun Times Card */}
+                  <div className="neu-card p-5 flex justify-around items-center">
+                    <div className="text-center">
+                      <span className="text-3xl">🌅</span>
+                      <p className="m-0 mt-1 text-xs text-textgray">Sunrise</p>
+                      <p className="m-0 text-sm md:text-base font-bold text-primary">{weatherData.sunrise}</p>
+                    </div>
+                    <div className="h-10 w-[1px] bg-gray-300" />
+                    <div className="text-center">
+                      <span className="text-3xl">🌇</span>
+                      <p className="m-0 mt-1 text-xs text-textgray">Sunset</p>
+                      <p className="m-0 text-sm md:text-base font-bold text-textdark">{weatherData.sunset}</p>
                     </div>
                   </div>
 
-                  <p className="m-0 mb-2 font-semibold text-sm text-primary">
-                    {weatherData.conditionLabel}
-                  </p>
+                  {/* Air Quality Card Component */}
+                  <AirQualityCard aqiData={aqiData} />
 
-                  <p className="m-0 text-xs text-textgray">
-                    Feels like {weatherData.feelsLike}°C • Wind: {weatherData.windSpeed} km/h
-                  </p>
-                </div>
-
-                {/* 🤖 AI Weather Advisory Card */}
-                {weatherData.aiTips && weatherData.aiTips.length > 0 && (
-                  <div className="neu-card p-4 text-left border-l-4 border-primary">
-                    <h3 className="m-0 mb-2 text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
-                      🤖 AI Weather Advisor & Tips
-                    </h3>
-                    <ul className="m-0 pl-4 flex flex-col gap-2">
-                      {weatherData.aiTips.map((tip, idx) => (
-                        <li key={idx} className="text-xs leading-snug text-textdark">
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* 🌅 Sun Times Card */}
-                <div className="neu-card p-4 flex justify-around items-center">
-                  <div className="text-center">
-                    <span className="text-2xl">🌅</span>
-                    <p className="m-0 mt-0.5 text-[10px] text-textgray">Sunrise</p>
-                    <p className="m-0 text-sm font-bold text-primary">{weatherData.sunrise}</p>
-                  </div>
-                  <div className="h-7 w-[1px] bg-gray-300" />
-                  <div className="text-center">
-                    <span className="text-2xl">🌇</span>
-                    <p className="m-0 mt-0.5 text-[10px] text-textgray">Sunset</p>
-                    <p className="m-0 text-sm font-bold text-textdark">{weatherData.sunset}</p>
-                  </div>
-                </div>
-
-                {/* 24-Hour Interactive Weather Slider */}
-                {weatherData.hourly && weatherData.hourly.length > 0 && (
-                  <div className="neu-card p-4">
-                    <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">🕒 24-Hour Forecast</h3>
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-                      {weatherData.hourly.map((item, index) => (
-                        <div key={index} className="neu-input flex-0-auto w-16 p-2.5 rounded-xl text-center flex flex-col items-center gap-1">
-                          <span className="text-[10px] text-textgray">{item.time}</span>
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="text-xs font-semibold text-textdark">{item.temp}°C</span>
-                        </div>
-                      ))}
+                  {/* Weather Metrics Grid */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="neu-card p-4 flex flex-col gap-1">
+                      <span className="text-xs text-textgray font-medium">💧 Humidity</span>
+                      <span className="text-lg font-bold text-textdark">{weatherData.humidity}%</span>
+                    </div>
+                    <div className="neu-card p-4 flex flex-col gap-1">
+                      <span className="text-xs text-textgray font-medium">☀️ UV Index</span>
+                      <span className="text-lg font-bold text-textdark">{weatherData.uvIndex}</span>
+                    </div>
+                    <div className="neu-card p-4 flex flex-col gap-1">
+                      <span className="text-xs text-textgray font-medium">💨 Wind</span>
+                      <span className="text-lg font-bold text-textdark">{weatherData.windSpeed} km/h</span>
+                    </div>
+                    <div className="neu-card p-4 flex flex-col gap-1">
+                      <span className="text-xs text-textgray font-medium">⏲️ Pressure</span>
+                      <span className="text-lg font-bold text-textdark">{weatherData.pressure} hPa</span>
                     </div>
                   </div>
-                )}
 
-                {/* Air Quality Card Component */}
-                <AirQualityCard aqiData={aqiData} />
+                  {/* Quick Bolt Ride Shortcut Card */}
+                  <div className="neu-card-interactive neu-card p-5 flex justify-between items-center cursor-pointer" onClick={openBoltRide}>
+                    <div>
+                      <h4 className="m-0 text-xs md:text-sm font-bold text-textdark">🚗 Need a Ride in {selectedCity}?</h4>
+                      <p className="m-0 mt-1 text-xs text-textgray">Request Bolt car or Boda-Boda ride</p>
+                    </div>
+                    <span className="neu-btn px-3.5 py-2 rounded-lg text-xs font-bold text-primary">Bolt ➔</span>
+                  </div>
 
-                {/* Weather Metrics Grid */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="neu-card p-3.5 flex flex-col gap-1">
-                    <span className="text-[11px] text-textgray font-medium">💧 Humidity</span>
-                    <span className="text-base font-bold text-textdark">{weatherData.humidity}%</span>
-                  </div>
-                  <div className="neu-card p-3.5 flex flex-col gap-1">
-                    <span className="text-[11px] text-textgray font-medium">☀️ UV Index</span>
-                    <span className="text-base font-bold text-textdark">{weatherData.uvIndex}</span>
-                  </div>
-                  <div className="neu-card p-3.5 flex flex-col gap-1">
-                    <span className="text-[11px] text-textgray font-medium">💨 Wind</span>
-                    <span className="text-base font-bold text-textdark">{weatherData.windSpeed} km/h</span>
-                  </div>
-                  <div className="neu-card p-3.5 flex flex-col gap-1">
-                    <span className="text-[11px] text-textgray font-medium">⏲️ Pressure</span>
-                    <span className="text-base font-bold text-textdark">{weatherData.pressure} hPa</span>
-                  </div>
+                  {/* Travel Info Card */}
+                  {countryInfo && (
+                    <div className="neu-card p-5 text-left">
+                      <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🌍 Travel Info ({countryInfo.countryName})</h3>
+                      <p className="m-1 text-xs md:text-sm text-textdark"><strong>Currency:</strong> {countryInfo.currency}</p>
+                      <p className="m-1 text-xs md:text-sm text-textdark"><strong>Languages:</strong> {countryInfo.languages}</p>
+                      <p className="m-0 mt-2 text-xs md:text-sm text-primary italic">{countryInfo.tip}</p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Quick Bolt Ride Shortcut Card */}
-                <div className="neu-card-interactive neu-card p-4 flex justify-between items-center cursor-pointer" onClick={openBoltRide}>
-                  <div>
-                    <h4 className="m-0 text-xs font-bold text-textdark">🚗 Need a Ride in {selectedCity}?</h4>
-                    <p className="m-0 mt-0.5 text-[11px] text-textgray">Request Bolt car or Boda-Boda ride</p>
-                  </div>
-                  <span className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Bolt ➔</span>
-                </div>
-
-                {/* 3-Day Forecast */}
-                <div className="neu-card p-4">
-                  <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">📅 3-Day Forecast</h3>
-                  <div className="flex justify-between text-xs text-textdark py-2 border-b border-gray-200">
-                    <span className="font-semibold">Today</span>
-                    <span>High: {weatherData.dailyMax[0]}°C | Low: {weatherData.dailyMin[0]}°C</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-textdark py-2 border-b border-gray-200">
-                    <span className="font-semibold">Tomorrow</span>
-                    <span>High: {weatherData.dailyMax[1]}°C | Low: {weatherData.dailyMin[1]}°C</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-textdark py-2">
-                    <span className="font-semibold">Day After</span>
-                    <span>High: {weatherData.dailyMax[2]}°C | Low: {weatherData.dailyMin[2]}°C</span>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Travel Info Card */}
-            {countryInfo && (
-              <div className="neu-card p-4 text-left">
-                <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🌍 Travel Info ({countryInfo.countryName})</h3>
-                <p className="m-1 text-xs text-textdark"><strong>Currency:</strong> {countryInfo.currency}</p>
-                <p className="m-1 text-xs text-textdark"><strong>Languages:</strong> {countryInfo.languages}</p>
-                <p className="m-0 mt-2 text-xs text-primary italic">{countryInfo.tip}</p>
               </div>
             )}
           </div>
@@ -597,40 +605,40 @@ export default function App() {
 
         {/* TAB 2: HOTELS */}
         {activeTab === 'hotels' && (
-          <div className="flex flex-col gap-4">
-            <div className="neu-card p-4 text-center">
-              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🏨 Hotels in {selectedCity}</h2>
-              <p className="m-0 text-xs text-textgray">Compare top stays & lodges with instant availability.</p>
+          <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
+            <div className="neu-card p-5 text-center">
+              <h2 className="m-0 mb-1 text-lg font-bold text-textdark">🏨 Hotels in {selectedCity}</h2>
+              <p className="m-0 text-xs md:text-sm text-textgray">Compare top stays & lodges with instant availability.</p>
             </div>
 
-            <div className="neu-card p-4 flex gap-3.5 items-center">
-              <div className="text-2xl p-3 neu-input rounded-xl">🏨</div>
-              <div className="flex flex-col gap-1 flex-1">
-                <h3 className="m-0 text-xs font-bold text-textdark">Grand Luxury Hotel & Suites</h3>
-                <p className="m-0 text-[11px] text-primary">⭐ 4.8 / 5.0 (240 reviews)</p>
-                <p className="m-0 text-xs font-bold text-textdark">From $85 / night</p>
+            <div className="neu-card p-5 flex gap-4 items-center">
+              <div className="text-3xl p-4 neu-input rounded-xl">🏨</div>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <h3 className="m-0 text-sm md:text-base font-bold text-textdark">Grand Luxury Hotel & Suites</h3>
+                <p className="m-0 text-xs text-primary">⭐ 4.8 / 5.0 (240 reviews)</p>
+                <p className="m-0 text-xs md:text-sm font-bold text-textdark">From $85 / night</p>
                 <a
                   href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(selectedCity)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="neu-btn mt-2 inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-center no-underline"
+                  className="neu-btn mt-2 inline-block px-4 py-2 rounded-lg text-xs font-semibold text-center no-underline"
                 >
                   View Stays on Booking.com ↗
                 </a>
               </div>
             </div>
 
-            <div className="neu-card p-4 flex gap-3.5 items-center">
-              <div className="text-2xl p-3 neu-input rounded-xl">🌿</div>
-              <div className="flex flex-col gap-1 flex-1">
-                <h3 className="m-0 text-xs font-bold text-textdark">Serene Eco-Lodge & Spa</h3>
-                <p className="m-0 text-[11px] text-primary">⭐ 4.6 / 5.0 (180 reviews)</p>
-                <p className="m-0 text-xs font-bold text-textdark">From $62 / night</p>
+            <div className="neu-card p-5 flex gap-4 items-center">
+              <div className="text-3xl p-4 neu-input rounded-xl">🌿</div>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <h3 className="m-0 text-sm md:text-base font-bold text-textdark">Serene Eco-Lodge & Spa</h3>
+                <p className="m-0 text-xs text-primary">⭐ 4.6 / 5.0 (180 reviews)</p>
+                <p className="m-0 text-xs md:text-sm font-bold text-textdark">From $62 / night</p>
                 <a
                   href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(selectedCity)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="neu-btn mt-2 inline-block px-3 py-1.5 rounded-lg text-xs font-semibold text-center no-underline"
+                  className="neu-btn mt-2 inline-block px-4 py-2 rounded-lg text-xs font-semibold text-center no-underline"
                 >
                   Check Availability ↗
                 </a>
@@ -641,31 +649,31 @@ export default function App() {
 
         {/* TAB 3: FLIGHTS */}
         {activeTab === 'flights' && (
-          <div className="flex flex-col gap-4">
-            <div className="neu-card p-4 text-center">
-              <h2 className="m-0 mb-1 text-base font-bold text-textdark">✈️ Search Flights</h2>
-              <p className="m-0 text-xs text-textgray">Find the best route and flight rates globally.</p>
+          <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
+            <div className="neu-card p-5 text-center">
+              <h2 className="m-0 mb-1 text-lg font-bold text-textdark">✈️ Search Flights</h2>
+              <p className="m-0 text-xs md:text-sm text-textgray">Find the best route and flight rates globally.</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-3 text-xs font-bold text-primary uppercase tracking-wide">🛫 Flight Search Matrix</h3>
-              <div className="flex flex-col gap-3 mt-2">
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🛫 Flight Search Matrix</h3>
+              <div className="flex flex-col gap-4 mt-3">
                 <div>
-                  <label className="text-[11px] font-medium text-textgray">From (Airport/City)</label>
+                  <label className="text-xs font-medium text-textgray">From (Airport/City)</label>
                   <input
                     type="text"
                     value={flightFrom}
                     onChange={(e) => setFlightFrom(e.target.value)}
-                    className="neu-input px-3 py-2 rounded-xl text-xs w-full mt-1"
+                    className="neu-input px-4 py-2.5 rounded-xl text-xs md:text-sm w-full mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium text-textgray">To (Destination)</label>
+                  <label className="text-xs font-medium text-textgray">To (Destination)</label>
                   <input
                     type="text"
                     value={flightTo}
                     onChange={(e) => setFlightTo(e.target.value)}
-                    className="neu-input px-3 py-2 rounded-xl text-xs w-full mt-1"
+                    className="neu-input px-4 py-2.5 rounded-xl text-xs md:text-sm w-full mt-1"
                   />
                 </div>
 
@@ -673,7 +681,7 @@ export default function App() {
                   href={`https://www.google.com/travel/flights?q=flights+from+${encodeURIComponent(flightFrom)}+to+${encodeURIComponent(flightTo)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="neu-btn mt-2 block px-4 py-2.5 rounded-xl text-xs font-bold text-center no-underline text-primary"
+                  className="neu-btn mt-3 block px-5 py-3 rounded-xl text-xs md:text-sm font-bold text-center no-underline text-primary"
                 >
                   Search Flights on Google Flights ↗
                 </a>
@@ -684,29 +692,29 @@ export default function App() {
 
         {/* TAB 4: RIDES */}
         {activeTab === 'rides' && (
-          <div className="flex flex-col gap-4">
-            <div className="neu-card p-4 text-center">
-              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🚕 Order a Ride (Bolt)</h2>
-              <p className="m-0 text-xs text-textgray">Request a Car, XL, or Boda-Boda ride to anywhere in {selectedCity}.</p>
+          <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
+            <div className="neu-card p-5 text-center">
+              <h2 className="m-0 mb-1 text-lg font-bold text-textdark">🚕 Order a Ride (Bolt)</h2>
+              <p className="m-0 text-xs md:text-sm text-textgray">Request a Car, XL, or Boda-Boda ride to anywhere in {selectedCity}.</p>
             </div>
 
-            <div className="neu-card p-4">
-              <h3 className="m-0 text-xs font-bold text-primary uppercase tracking-wide">⚡ Available Ride Types</h3>
-              <div className="flex flex-col gap-3 mt-3">
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <div className="neu-card p-5">
+              <h3 className="m-0 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">⚡ Available Ride Types</h3>
+              <div className="flex flex-col gap-4 mt-4">
+                <div className="flex justify-between items-center py-2.5 border-b border-gray-200">
                   <div>
-                    <strong className="text-xs text-textdark">🚗 Bolt Car / Boda</strong>
-                    <p className="m-0 text-[10px] text-textgray">Fastest pick-up for city travel</p>
+                    <strong className="text-xs md:text-sm text-textdark">🚗 Bolt Car / Boda</strong>
+                    <p className="m-0 text-xs text-textgray">Fastest pick-up for city travel</p>
                   </div>
-                  <button onClick={openBoltRide} className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Book Ride ↗</button>
+                  <button onClick={openBoltRide} className="neu-btn px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-primary">Book Ride ↗</button>
                 </div>
 
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-2.5">
                   <div>
-                    <strong className="text-xs text-textdark">🛵 Boda-Boda (Motorcycle)</strong>
-                    <p className="m-0 text-[10px] text-textgray">Quickest mode to beat traffic</p>
+                    <strong className="text-xs md:text-sm text-textdark">🛵 Boda-Boda (Motorcycle)</strong>
+                    <p className="m-0 text-xs text-textgray">Quickest mode to beat traffic</p>
                   </div>
-                  <button onClick={openBoltRide} className="neu-btn px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Book Boda ↗</button>
+                  <button onClick={openBoltRide} className="neu-btn px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-primary">Book Boda ↗</button>
                 </div>
               </div>
             </div>
@@ -715,47 +723,47 @@ export default function App() {
 
         {/* TAB 5: COUNTRY HISTORY */}
         {activeTab === 'history' && (
-          <div className="flex flex-col gap-4">
-            <div className="neu-card p-4 text-center">
-              <h2 className="m-0 mb-1 text-base font-bold text-textdark">🏛️ Country History: {countryInfo ? countryInfo.countryName : 'Selected Location'}</h2>
-              <p className="m-0 text-xs text-textgray">Full breakdown from origins to present day.</p>
+          <div className="flex flex-col gap-4 max-w-3xl mx-auto w-full">
+            <div className="neu-card p-5 text-center">
+              <h2 className="m-0 mb-1 text-lg font-bold text-textdark">🏛️ Country History: {countryInfo ? countryInfo.countryName : 'Selected Location'}</h2>
+              <p className="m-0 text-xs md:text-sm text-textgray">Full breakdown from origins to present day.</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">📜 1. Before Independence</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.beforeIndependence || 'Ancient history and colonial period.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">📜 1. Before Independence</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.beforeIndependence || 'Ancient history and colonial period.'}</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🌅 2. After Independence</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.afterIndependence || 'Sovereignty and political development.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🌅 2. After Independence</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.afterIndependence || 'Sovereignty and political development.'}</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">👑 3. Leaders & Presidential Styles</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.presidentsAndStyle || 'Key heads of state and governing philosophies.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">👑 3. Leaders & Presidential Styles</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.presidentsAndStyle || 'Key heads of state and governing philosophies.'}</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">⭐ 4. Famous People & Icons</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.famousPeople || 'Prominent figures in arts, sports, and leadership.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">⭐ 4. Famous People & Icons</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.famousPeople || 'Prominent figures in arts, sports, and leadership.'}</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🎭 5. Culture & Traditions</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.culture || 'Local heritage, customs, music, and art.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🎭 5. Culture & Traditions</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.culture || 'Local heritage, customs, music, and art.'}</p>
             </div>
 
-            <div className="neu-card p-4 text-left">
-              <h3 className="m-0 mb-2 text-xs font-bold text-primary uppercase tracking-wide">🚀 6. Present Day & Outlook</h3>
-              <p className="m-0 text-xs leading-relaxed text-textdark">{history.presentDay || 'Current economic status and modern development.'}</p>
+            <div className="neu-card p-5 text-left">
+              <h3 className="m-0 mb-2 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">🚀 6. Present Day & Outlook</h3>
+              <p className="m-0 text-xs md:text-sm leading-relaxed text-textdark">{history.presentDay || 'Current economic status and modern development.'}</p>
             </div>
           </div>
         )}
       </main>
 
       {/* 🌊 Floating Glass Liquid Navigation Bar */}
-      <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[92%] max-w-[440px] neu-card p-2 flex justify-around items-center z-30 bg-opacity-90 backdrop-blur-md">
+      <nav className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[92%] max-w-[480px] neu-card p-2.5 flex justify-around items-center z-30 bg-opacity-90 backdrop-blur-md">
         <button
           className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${activeTab === 'weather' ? 'neu-btn text-primary' : 'text-textgray'}`}
           onClick={() => setActiveTab('weather')}
