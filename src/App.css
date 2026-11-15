@@ -1,0 +1,116 @@
+:root {
+  /* Color Combo System */
+  --color-blue: #47A5FF;
+  --color-black: #000000;
+  --color-slate: #4C5055;
+  --color-white: #FFFFFF;
+  --color-orange: #FF8F00;
+
+  --bg-primary: #000000;
+  --bg-card: rgba(76, 80, 85, 0.45);
+  --bg-card-solid: #4C5055;
+  --border-subtle: rgba(255, 255, 255, 0.12);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+
+  --accent-primary: #47A5FF;
+  --accent-cta: #FF8F00;
+
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --radius-lg: 16px;
+  --radius-md: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-black);
+  background-image: radial-gradient(at 50% 0%, #1a2230 0px, transparent 75%);
+  color: var(--color-white);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 🌧️ Falling Rain Container & Drop Animation */
+.rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.drop {
+  position: absolute;
+  bottom: 100%;
+  width: 1.5px;
+  height: 25px;
+  background: linear-gradient(transparent, #47A5FF);
+  animation: fall 0.8s linear infinite;
+  border-radius: 2px;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0.2;
+  }
+}
+
+/* 🌊 Floating Glass Bottom Navigation Bar */
+.glass-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 440px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(76, 80, 85, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 8px 12px;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
+}
+
+.glass-nav-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-nav-btn.active {
+  background: rgba(71, 165, 255, 0.25);
+  color: #47A5FF;
+  box-shadow: 0 0 15px rgba(71, 165, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Hide Scrollbar on Hourly Slider */
+div::-webkit-scrollbar {
+  display: none;
+}

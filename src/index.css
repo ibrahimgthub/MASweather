@@ -1,0 +1,59 @@
+body {
+  background-color: #ecf0f3;
+  color: #1e2125;
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Raised Tactile Card (Use for current weather, forecast items, humidity/wind boxes) */
+.neu-card {
+  background: linear-gradient(145deg, #e6e9f0, #e6e9f0);
+  box-shadow: 10px 10px 19px #c5c7d0, -10px -10px 19px #ffffff;
+  border-radius: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.neu-card-interactive:hover {
+  background: linear-gradient(145deg, #ff014f, #d10041);
+  color: #ffffff;
+  transform: translateY(-4px);
+}
+
+.neu-card-interactive:hover .neu-icon,
+.neu-card-interactive:hover .neu-subtext {
+  color: #ffffff !important;
+}
+
+/* Raised Button (Use for Search button, GPS Location toggle, °C/°F switch) */
+.neu-btn {
+  background: linear-gradient(145deg, #e6e9f0, #e6e9f0);
+  box-shadow: 10px 10px 19px #c5c7d0, -10px -10px 19px #ffffff;
+  color: #1e2125;
+  transition: all 0.3s ease;
+}
+
+.neu-btn:hover,
+.neu-btn-active {
+  background: linear-gradient(145deg, #ff014f, #d10041);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+/* Inset / Pressed Well (Use for City Search Input Bar) */
+.neu-input {
+  background-color: #ecf0f3;
+  box-shadow: inset 5px 5px 10px #c5c7d0, inset -5px -5px 10px #ffffff;
+  color: #1e2125;
+  border: none;
+  outline: none;
+}
+
+.neu-input:focus {
+  box-shadow: inset 5px 5px 10px #c5c7d0, inset -5px -5px 10px #ffffff, 0 0 0 2px #ff014f;
+}
+
+/* Sticky Top Header Bar */
+.nav-sticky {
+  background-color: rgba(236, 240, 243, 0.9);
+  backdrop-filter: blur(10px);
+}

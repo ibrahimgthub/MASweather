@@ -1,0 +1,29 @@
+.aqi-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 18px;
+  margin: 15px 0;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.aqi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.aqi-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #000;
+}
+
+.aqi-advice {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
