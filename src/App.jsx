@@ -207,6 +207,7 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [aqiData, setAqiData] = useState(null);
+  const [isLightOn, setIsLightOn] = useState(false);
 
   const [flightFrom, setFlightFrom] = useState('DAR');
   const [flightTo, setFlightTo] = useState('JNO');
@@ -427,15 +428,25 @@ export default function App() {
       {/* 🌧️ Render Falling Rain Effect */}
       {weatherData && weatherData.isRaining && <RainEffect />}
 
-      {/* Header Bar */}
+      {/* Header Bar with Get App & Masweather Pro Buttons */}
       <header className="flex justify-between items-center pb-3.5 mb-6 border-b border-gray-300 nav-sticky sticky top-0 z-20 pt-2 bg-bodybg/90 backdrop-blur-md">
         <h1 className="m-0 text-xl md:text-2xl font-bold tracking-tight text-textdark">Masweather</h1>
-        <button
-          onClick={handleGpsLocation}
-          className="neu-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold cursor-pointer text-primary"
-        >
-          Masweather Pro
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href="/masweather.apk"
+            download="Masweather.apk"
+            className="neu-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold text-textdark no-underline flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>📲</span>
+            <span>Get App</span>
+          </a>
+          <button
+            onClick={handleGpsLocation}
+            className="neu-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold cursor-pointer text-primary"
+          >
+            Masweather Pro
+          </button>
+        </div>
       </header>
 
       <main className="flex flex-col gap-6">
@@ -524,7 +535,88 @@ export default function App() {
 
                 {/* RIGHT COLUMN (Sidebar Metrics, AI & Info) */}
                 <div className="flex flex-col gap-6">
-                  {/* 🤖 AI Weather Advisory Card */}
+                  
+                  {/* 💡 Neumorphic Glowing Toggle Switch Widget */}
+                  <div className="neu-card p-5 text-center flex flex-col items-center gap-3">
+                    <h3 className="m-0 text-xs md:text-sm font-bold text-primary uppercase tracking-wide">💡 Ambient Light Control</h3>
+                    <div 
+                      onClick={() => setIsLightOn(!isLightOn)}
+                      style={{
+                        position: 'relative',
+                        width: '180px',
+                        height: '90px',
+                        background: '#e4e9f0',
+                        borderRadius: '45px',
+                        boxShadow: 'inset 6px 6px 12px #c5cbd3, inset -6px -6px 12px #ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      <div 
+                        style={{
+                          position: 'absolute',
+                          right: isLightOn ? '96px' : '6px',
+                          width: '78px',
+                          height: '78px',
+                          background: '#edf2f7',
+                          borderRadius: '24px',
+                          boxShadow: '6px 6px 16px #c5cbd3, -6px -6px 16px #ffffff, 0 0 0 1px rgba(255, 255, 255, 0.4)',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                        }}
+                      >
+                        {/* Top warm orange glow effect */}
+                        <div style={{
+                          position: 'absolute',
+                          top: '-2px',
+                          left: '10px',
+                          right: '10px',
+                          height: '4px',
+                          background: 'linear-gradient(90deg, transparent, #ffb347, #ff8c00, #ffb347, transparent)',
+                          borderRadius: '4px',
+                          opacity: isLightOn ? 1 : 0.2,
+                          boxShadow: isLightOn ? '0 -6px 15px rgba(255, 140, 0, 0.7), 0 -12px 30px rgba(255, 165, 0, 0.4)' : 'none',
+                          transition: 'opacity 0.3s ease'
+                        }} />
+
+                        {/* Light bulb icon */}
+                        <svg style={{
+                          width: '28px',
+                          height: '28px',
+                          fill: isLightOn ? '#ff8c00' : '#4a5568',
+                          zIndex: 1,
+                          position: 'relative',
+                          transition: 'fill 0.3s ease'
+                        }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm5.657 3.343a1 1 0 0 1 0 1.414l-.707.707a1 1 0 1 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0zm-11.314 0a1 1 0 0 1 1.414 0l.707.707a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 0-1.414zM4 11a1 1 0 1 0 0 2h1a1 1 0 1 0 0-2H4zm15 0a1 1 0 1 0 0 2h1a1 1 0 1 0 0-2h-1zM12 7a5 5 0 0 0-5 5c0 2.137 1.34 3.951 3.22 4.66a1 1 0 0 1 .78 1.025V19a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.315a1 1 0 0 1 .78-1.025C15.66 15.951 17 14.137 17 12a5 5 0 0 0-5-5zm-2 14a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1z"/>
+                        </svg>
+                      </div>
+
+                      {/* Ambient background glow */}
+                      <div style={{
+                        position: 'absolute',
+                        right: isLightOn ? '85px' : '12px',
+                        width: '65px',
+                        height: '65px',
+                        background: 'radial-gradient(circle, rgba(255, 165, 0, 0.3) 0%, rgba(255, 200, 100, 0) 70%)',
+                        borderRadius: '50%',
+                        zIndex: 0,
+                        pointerEvents: 'none',
+                        opacity: isLightOn ? 1 : 0,
+                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                      }} />
+                    </div>
+                    <p className="m-0 text-[11px] text-textgray">
+                      Status: <strong className={isLightOn ? 'text-[#ff8c00]' : 'text-textdark'}>{isLightOn ? 'ON (Ambient Glow Active)' : 'OFF'}</strong>
+                    </p>
+                  </div>
+
+                  {/* 🤖 AI Weather Advisor Card */}
                   {weatherData.aiTips && weatherData.aiTips.length > 0 && (
                     <div className="neu-card p-5 text-left border-l-4 border-primary">
                       <h3 className="m-0 mb-3 text-xs md:text-sm font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
