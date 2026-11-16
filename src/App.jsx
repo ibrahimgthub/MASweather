@@ -199,6 +199,9 @@ const formatSunTime = (isoTimeStr) => {
 };
 
 export default function App() {
+  // Vite serves files in /public from the site root.
+  // This also respects the configured Vite base path when deployed.
+  const apkDownloadUrl = `${import.meta.env.BASE_URL}masweather.apk`;
   const [activeTab, setActiveTab] = useState('weather');
   const [cityInput, setCityInput] = useState('');
   const [selectedCity, setSelectedCity] = useState('Dar es Salaam, Tanzania');
@@ -433,8 +436,11 @@ export default function App() {
         <h1 className="m-0 text-xl md:text-2xl font-bold tracking-tight text-textdark">Masweather</h1>
         <div className="flex items-center gap-2">
           <a
-            href="/masweather.apk"
+            href={apkDownloadUrl}
             download="Masweather.apk"
+            type="application/vnd.android.package-archive"
+            aria-label="Download MASweather Android APK"
+            title="Download MASweather Android app"
             className="neu-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold text-textdark no-underline flex items-center gap-1.5 cursor-pointer"
           >
             <span>📲</span>
